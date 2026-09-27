@@ -12,7 +12,8 @@ class Programas:
         #self.programaMultII(ram,cpu,15, 150)
         #self.programaFat(ram, cpu, 10)
         #self.programaDivII(ram, cpu, 175, 4)
-        self.programaPoten(ram, cpu, 2, 6)
+        #self.programaPoten(ram, cpu, 2, 6)
+        self.programaBhaskara(ram, cpu, 1, 4, 4)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -37,12 +38,20 @@ class Programas:
     def programaMultII(self, ram, cpu, multiplicando, multiplicador):
         ram.criarRAM_vazia(2)
         lan = LingAltoNivel()
-        lan.salvarValor(cpu, ram, multiplicando, 1)
 
-        for i in range(multiplicador):
+        negativo = multiplicador < 0
+        vezes = abs(multiplicador)
+
+        lan.salvarValor(cpu, ram, multiplicando, 1)
+        for i in range(vezes):
             lan.somar(cpu,ram,0,1)
 
         mult = lan.obterValor(cpu,ram,0)
+
+        if negativo:
+            mult = -mult
+            cpu.setRegistrador1(mult)
+
         print(f"O resultado da multiplicação eh: {mult}")
 
     def programaFat(self,ram, cpu, fat):
@@ -85,7 +94,6 @@ class Programas:
 
     def programaDivII(self, ram, cpu, dividendo, divisor):
         # zerar ram
-        ram.criarRAM_vazia(4)
         # Ex. dividir 14 / 3:
         # 14-3=11 (1 sub)
         # 11-3=8 (2 subs)
@@ -101,30 +109,87 @@ class Programas:
         # 2 -> copia do registrador para RAM
         # 3 -> copia da RAM para o registrador
 
+        if divisor == 0:
+            print("Erro: divisão por zero não eh permitida.")
+            return None
+
+        resultado_negativo = (dividendo < 0) != (divisor < 0)  # XOR de sinais
+        dividendo_abs = abs(dividendo)
+        divisor_abs = abs(divisor)
+
+        ram.criarRAM_vazia(4)
         lan = LingAltoNivel()
-        lan.salvarValor(cpu, ram, dividendo, 0)
-        lan.salvarValor(cpu, ram, divisor, 1)
+        lan.salvarValor(cpu, ram, dividendo_abs, 0)  # <- precisa ser dividendo_abs, não dividendo
+        lan.salvarValor(cpu, ram, divisor_abs, 1)
         lan.salvarValor(cpu, ram, 1, 2)
 
-        while (dividendo >= divisor):
+        while dividendo_abs >= divisor_abs:
             lan.subtrair(cpu, ram, 0, 1)
             lan.somar(cpu, ram, 3, 2)
-
-            dividendo = lan.obterValor(cpu, ram, 0)
+            dividendo_abs = lan.obterValor(cpu, ram, 0)
 
         div = lan.obterValor(cpu, ram, 3)
 
-        print(f"O resultado da divisão é: {div}")
+        if resultado_negativo:
+            div = -div
+            cpu.setRegistrador1(div)
+
+        print(f"O resultado da divisao eh: {div}")
 
     def programaPoten(self, ram, cpu, base, expoente):
         resultado = 1
-        for i in range(expoente):
+        expoente_abs = abs(expoente)
+        for i in range(expoente_abs):
             self.programaMultII(ram,cpu,resultado, base)
             resultado = cpu.getRegistrador1()
-        print(f"O Resultado da potenciação eh: {resultado}")
+            print(f"O Resultado da potenciação eh: {resultado}")
 
-    def programaPalindromo(self, ram, cpu, numero):
-        print(f"Teste git no TP")
+    def programaBhaskara(self, ram, cpu, a, b ,c):
+        lan = LingAltoNivel()
+
+        self.programaPoten(ram , cpu, b, 2)
+        baoquadrado = cpu.getRegistrador1()
+
+        self.programaMultII(ram, cpu, a, c)
+        a_vezes_c = cpu.getRegistrador1()
+
+        self.programaMultII(ram,cpu, a_vezes_c, 4)
+        quatro_vezes_ac = cpu.getRegistrador1()
+
+        lan.salvarValor(cpu, ram, baoquadrado, 0)
+        lan.salvarValor(cpu,ram, quatro_vezes_ac, 1)
+        lan.subtrair(cpu, ram, 0, 1)
+        delta = lan.obterValor(cpu, ram, 0)
+
+        print(f"O delta é {delta}")
+
+        if delta < 0:
+            print(f"Não existem raizes reais")
+        elif delta == 0:
+            self.programaMultII(ram, cpu, a, 2)
+            dois_vezes_a = cpu.getRegistrador1()
+
+            escala = 1000
+
+            self.programaMultII(ram, cpu, -b, escala)
+            menos_b_escalado = cpu.getRegistrador1()
+
+            self.programaDivII(ram, cpu, menos_b_escalado, dois_vezes_a)
+            quociente_escalado = cpu.getRegistrador1()
+
+            x = quociente_escalado / escala
+            print(f"Uma raiz real: x = {x}")
+        else:
+            self.programaPoten(ram, cpu, delta, 1/2)
+            raiz_delta = cpu.getRegistrador1()
+
+            self.programaMultII(ram, cpu, a, 2)
+            dois_vezes_a = cpu.getRegistrador1()
+
+
+
+
+
 
 
 
