@@ -13,7 +13,8 @@ class Programas:
         #self.programaFat(ram, cpu, 10)
         #self.programaDivII(ram, cpu, 175, 4)
         #self.programaPoten(ram, cpu, 2, 6)
-        self.programaBhaskara(ram, cpu, 1, 4, 4)
+        self.programaBhaskara(ram, cpu, 1, 2, -3)
+        #self.programaRaiz(ram, cpu, 4)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -144,6 +145,36 @@ class Programas:
             resultado = cpu.getRegistrador1()
             print(f"O Resultado da potenciação eh: {resultado}")
 
+    def programaRaiz(self, ram, cpu, base):
+
+        if (base < 0):
+            print("Não é permitido bases menores que 0")
+            return 0
+
+        ram.criarRAM_vazia(3)
+        lan = LingAltoNivel()
+
+        resultado = 0
+        incremento = 1
+        while (base > 0):
+            lan.salvarValor(cpu, ram, base, 0)
+            lan.salvarValor(cpu, ram, incremento, 1)
+            lan.subtrair(cpu, ram, 0, 1)
+            base = cpu.getRegistrador1()
+            lan.salvarValor(cpu, ram, 2, 2)
+            lan.somar(cpu, ram, 1, 2)
+            incremento = cpu.getRegistrador1()
+            lan.salvarValor(cpu, ram, resultado, 0)
+            lan.salvarValor(cpu, ram, 1, 1)
+            lan.somar(cpu, ram, 0, 1)
+            resultado = cpu.getRegistrador1()
+
+        if (base < 0):
+            lan.subtrair(cpu, ram, 0, 1)
+            resultado = cpu.getRegistrador1()
+
+        print(f"O resultado inteiro da raíz quadrada eh: {resultado}")
+
     def programaBhaskara(self, ram, cpu, a, b ,c):
         lan = LingAltoNivel()
 
@@ -180,11 +211,29 @@ class Programas:
             x = quociente_escalado / escala
             print(f"Uma raiz real: x = {x}")
         else:
-            self.programaPoten(ram, cpu, delta, 1/2)
+            self.programaRaiz(ram, cpu, delta)
             raiz_delta = cpu.getRegistrador1()
 
             self.programaMultII(ram, cpu, a, 2)
             dois_vezes_a = cpu.getRegistrador1()
+
+            lan.salvarValor(cpu,ram, -b, 0)
+            lan.salvarValor(cpu,ram, raiz_delta, 1)
+            lan.somar(cpu, ram , 0, 1)
+            x1 = cpu.getRegistrador1()
+            self.programaDivII(ram, cpu, x1, dois_vezes_a)
+            x1 = cpu.getRegistrador1()
+
+            lan.salvarValor(cpu,ram, -b, 0)
+            lan.salvarValor(cpu,ram, raiz_delta, 1)
+            lan.subtrair(cpu, ram, 0, 1)
+            x2 = cpu.getRegistrador1()
+            self.programaDivII(ram, cpu, x2, dois_vezes_a)
+            x2 = cpu.getRegistrador1()
+
+            print(f"As raizes sao respectivamente : {x1} e {x2}")
+
+
 
 
 
