@@ -124,6 +124,7 @@ class Programas:
         print(f"O Resultado da potenciação eh: {resultado}")
 
     def programaPalindromo(self, ram, cpu, numero):
+        ...
 
 
 
