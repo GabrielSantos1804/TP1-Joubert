@@ -12,7 +12,7 @@ class Programas:
         #self.programaMultII(ram,cpu,15, 150)
         #self.programaFat(ram, cpu, 10)
         #self.programaDivII(ram, cpu, 175, 4)
-        #self.programaPoten(ram, cpu, 2, 6)
+        #self.programaPoten(ram, cpu, 2, 5)
         #self.programaBhaskara(ram, cpu, 1, 2, -3)
         #self.programaRaiz(ram, cpu, 4)
         #self.programaDistancia2Pontos(ram, cpu, 1, 4, 2, 6)
@@ -56,7 +56,7 @@ class Programas:
 
         if negativo:
             mult = -mult
-            cpu.setRegistrador1(mult)
+            lan.salvarValor(cpu, ram, mult, 0)
 
         print(f"O resultado da multiplicação eh: {mult}")
 
@@ -138,16 +138,18 @@ class Programas:
 
         if resultado_negativo:
             div = -div
-            cpu.setRegistrador1(div)
+        lan.salvarValor(cpu, ram, div, 0)
 
         print(f"O resultado da divisao eh: {div}")
 
     def programaPoten(self, ram, cpu, base, expoente):
+        lan = LingAltoNivel()
+
         resultado = 1
         expoente_abs = abs(expoente)
         for i in range(expoente_abs):
             self.programaMultII(ram,cpu,resultado, base)
-            resultado = cpu.getRegistrador1()
+            resultado = lan.obterValor(cpu, ram, 0)
             print(f"O Resultado da potenciação eh: {resultado}")
 
     def programaRaiz(self, ram, cpu, base):
@@ -165,18 +167,17 @@ class Programas:
             lan.salvarValor(cpu, ram, base, 0)
             lan.salvarValor(cpu, ram, incremento, 1)
             lan.subtrair(cpu, ram, 0, 1)
-            base = cpu.getRegistrador1()
+            base = lan.obterValor(cpu, ram, 0)
             lan.salvarValor(cpu, ram, 2, 2)
             lan.somar(cpu, ram, 1, 2)
-            incremento = cpu.getRegistrador1()
+            incremento = lan.obterValor(cpu, ram, 1)
             lan.salvarValor(cpu, ram, resultado, 0)
             lan.salvarValor(cpu, ram, 1, 1)
             lan.somar(cpu, ram, 0, 1)
-            resultado = cpu.getRegistrador1()
-
+            resultado = lan.obterValor(cpu, ram, 0)
         if (base < 0):
             lan.subtrair(cpu, ram, 0, 1)
-            resultado = cpu.getRegistrador1()
+            resultado = lan.obterValor(cpu, ram, 0)
 
         print(f"O resultado inteiro da raíz quadrada eh: {resultado}")
 
@@ -186,18 +187,18 @@ class Programas:
         lan = LingAltoNivel()
 
         self.programaPoten(ram , cpu, b, 2)
-        baoquadrado = cpu.getRegistrador1()
+        baoquadrado = lan.obterValor(cpu, ram, 0)
 
         self.programaMultII(ram, cpu, a, c)
-        a_vezes_c = cpu.getRegistrador1()
+        a_vezes_c = lan.obterValor(cpu, ram, 0)
 
         self.programaMultII(ram,cpu, a_vezes_c, 4)
-        quatro_vezes_ac = cpu.getRegistrador1()
+        quatro_vezes_ac = lan.obterValor(cpu, ram, 0)
 
         lan.salvarValor(cpu, ram, baoquadrado, 0)
         lan.salvarValor(cpu,ram, quatro_vezes_ac, 1)
         lan.subtrair(cpu, ram, 0, 1)
-        delta = cpu.getRegistrador1()
+        delta = lan.obterValor(cpu, ram, 0)
 
         print(f"O delta é {delta}")
 
@@ -205,39 +206,39 @@ class Programas:
             print(f"Não existem raizes reais")
         elif delta == 0:
             self.programaMultII(ram, cpu, a, 2)
-            dois_vezes_a = cpu.getRegistrador1()
+            dois_vezes_a = lan.obterValor(cpu, ram, 0)
 
             escala = 1000
 
             self.programaMultII(ram, cpu, -b, escala)
-            menos_b_escalado = cpu.getRegistrador1()
+            menos_b_escalado = lan.obterValor(cpu, ram, 0)
 
             self.programaDivII(ram, cpu, menos_b_escalado, dois_vezes_a)
-            quociente_escalado = cpu.getRegistrador1()
+            quociente_escalado = lan.obterValor(cpu, ram, 0)
 
             self.programaDivII(ram,cpu,quociente_escalado,escala)
-            x = cpu.getRegistrador1()
+            x = lan.obterValor(cpu, ram, 0)
             print(f"Uma raiz real: x = {x}")
         else:
             self.programaRaiz(ram, cpu, delta)
-            raiz_delta = cpu.getRegistrador1()
+            raiz_delta = lan.obterValor(cpu, ram, 0)
 
             self.programaMultII(ram, cpu, a, 2)
-            dois_vezes_a = cpu.getRegistrador1()
+            dois_vezes_a = lan.obterValor(cpu, ram, 0)
 
             lan.salvarValor(cpu,ram, -b, 0)
             lan.salvarValor(cpu,ram, raiz_delta, 1)
             lan.somar(cpu, ram , 0, 1)
-            x1 = cpu.getRegistrador1()
+            x1 = lan.obterValor(cpu, ram, 0)
             self.programaDivII(ram, cpu, x1, dois_vezes_a)
-            x1 = cpu.getRegistrador1()
+            x1 = lan.obterValor(cpu,ram, 0)
 
             lan.salvarValor(cpu,ram, -b, 0)
             lan.salvarValor(cpu,ram, raiz_delta, 1)
             lan.subtrair(cpu, ram, 0, 1)
-            x2 = cpu.getRegistrador1()
+            x2 = lan.obterValor(cpu, ram, 0)
             self.programaDivII(ram, cpu, x2, dois_vezes_a)
-            x2 = cpu.getRegistrador1()
+            x2 = lan.obterValor(cpu, ram, 0)
 
             print(f"As raizes sao respectivamente : {x1} e {x2}")
 
@@ -249,26 +250,26 @@ class Programas:
         lan.salvarValor(cpu, ram, x1, 0)
         lan.salvarValor(cpu, ram, x2, 1)
         lan.subtrair(cpu, ram, 1, 0)
-        x = cpu.getRegistrador1()
+        x = lan.obterValor(cpu, ram, 1)
 
         lan.salvarValor(cpu, ram, y1, 0)
         lan.salvarValor(cpu, ram, y2, 1)
         lan.subtrair(cpu, ram, 1, 0)
-        y = cpu.getRegistrador1()
+        y = lan.obterValor(cpu, ram, 1)
 
         self.programaPoten(ram, cpu, x,2)
-        x = cpu.getRegistrador1()
+        x = lan.obterValor(cpu, ram, 0)
 
         self.programaPoten(ram, cpu, y, 2)
-        y = cpu.getRegistrador1()
+        y = lan.obterValor(cpu, ram, 0)
 
         lan.salvarValor(cpu, ram, x, 0)
         lan.salvarValor(cpu, ram, y, 1)
         lan.somar(cpu, ram , 1, 0)
-        d = cpu.getRegistrador1()
+        d = lan.obterValor(cpu, ram, 1)
 
         self.programaRaiz(ram, cpu, d)
-        d = cpu.getRegistrador1()
+        d = lan.obterValor(cpu, ram, 0)
         print(f"A distancia entre esses pontos é {d}")
 
     def programaVerticeParabola(self, ram , cpu, a, b, c):
@@ -277,28 +278,28 @@ class Programas:
         lan = LingAltoNivel()
 
         self.programaPoten(ram, cpu, b, 2)
-        baoquadrado = cpu.getRegistrador1()
+        baoquadrado = lan.obterValor(cpu, ram, 0)
 
         self.programaMultII(ram, cpu, a, c)
-        a_vezes_c = cpu.getRegistrador1()
+        a_vezes_c = lan.obterValor(cpu, ram, 0)
 
         self.programaMultII(ram, cpu, a_vezes_c, 4)
-        quatro_vezes_ac = cpu.getRegistrador1()
+        quatro_vezes_ac = lan.obterValor(cpu, ram, 0)
 
         lan.salvarValor(cpu, ram, baoquadrado, 0)
         lan.salvarValor(cpu, ram, quatro_vezes_ac, 1)
         lan.subtrair(cpu, ram, 0, 1)
-        delta = cpu.getRegistrador1()
+        delta = lan.obterValor(cpu, ram, 0)
 
         self.programaMultII(ram, cpu, 2, a)
-        dois_vezes_a = cpu.getRegistrador1()
+        dois_vezes_a = lan.obterValor(cpu, ram, 0)
         self.programaDivII(ram, cpu, -b, dois_vezes_a)
-        xv = cpu.getRegistrador1()
+        xv = lan.obterValor(cpu,ram, 0)
 
         self.programaMultII(ram, cpu, 4, a)
-        quatro_vezes_a = cpu.getRegistrador1()
+        quatro_vezes_a = lan.obterValor(cpu,ram, 0)
         self.programaDivII(ram, cpu, -delta, quatro_vezes_a)
-        yv = cpu.getRegistrador1()
+        yv = lan.obterValor(cpu,ram, 0)
 
         print(f"O vertice da parabola é {xv, yv}")
 
@@ -338,31 +339,31 @@ class Programas:
         lan = LingAltoNivel()
 
         self.programaMultII(ram, cpu, v0, t)
-        v0 = cpu.getRegistrador1()
+        v0 = lan.obterValor(cpu,ram, 0)
 
         self.programaPoten(ram, cpu, t, 2)
-        t = cpu.getRegistrador1()
+        t = lan.obterValor(cpu,ram, 0)
 
         self.programaMultII(ram , cpu, a, t)
-        t = cpu.getRegistrador1()
+        t = lan.obterValor(cpu,ram, 0)
 
         self.programaDivII(ram, cpu, t, 2)
-        t = cpu.getRegistrador1()
+        t = lan.obterValor(cpu,ram, 0)
 
         lan.salvarValor(cpu, ram, S0, 0)
         lan.salvarValor(cpu, ram, v0, 1)
         lan.somar(cpu, ram, 0, 1)
-        v0 = cpu.getRegistrador1()
+        v0 = lan.obterValor(cpu,ram, 0)
 
         lan.salvarValor(cpu,ram, v0, 0)
         lan.salvarValor(cpu, ram, t, 1)
         lan.somar(cpu, ram, 0, 1)
-        s = cpu.getRegistrador1()
+        s = lan.obterValor(cpu,ram, 0)
 
         print(f"O espaço é: {s}")
 
     def programaMDC(self,ram,cpu,numero1,numero2):
-        ram.criarRAM_vazia(2)
+        ram.criarRAM_vazia(1)
 
         lan = LingAltoNivel()
 
