@@ -17,6 +17,7 @@ class Programas:
         #self.programaRaiz(ram, cpu, 4)
         #self.programaDistancia2Pontos(ram, cpu, 1, 4, 2, 6)
         #self.programaVerticeParabola(ram, cpu, 1, -4, 3)
+        #self.programaModulo(ram, cpu, 17, 5)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -298,6 +299,37 @@ class Programas:
 
         print(f"O vertice da parabola é {xv, yv}")
 
+    def programaModulo(self, ram, cpu, dividendo, divisor):
+        #não podemos executar divisao com o divisor 0
+        if divisor == 0:
+            print("Erro: divisão por zero não é permitida.")
+            return None
+        #transformamos os valores em positivos
+        dividendo_abs = abs(dividendo)
+        divisor_abs = abs(divisor)
+        ram.criarRAM_vazia(2)#criando o espaço na RAM para executar a conta
+        lan = LingAltoNivel()#criando um objeto com as funções da linguagem de alto nivel
+        #salvando na RAM os valores positivos
+        lan.salvarValor(cpu,ram,dividendo_abs,0)
+        lan.salvarValor(cpu,ram,divisor_abs,1)
+
+        while dividendo_abs >= divisor_abs:#enquanto o dividendo for maior que o divisor, continue subtraindo, quando o dividendo for menor, quer dizer que chegamos no resto
+            lan.subtrair(cpu,ram,0,1)#subtrair dividendo por divisor
+            dividendo_abs = lan.obterValor(cpu,ram,0)#atualizar dividendo
+
+        resto = dividendo_abs
+        if resto != 0:
+            if divisor > 0:
+                if dividendo < 0:
+                    resto = divisor_abs - resto
+            else:
+                if dividendo >= 0:
+                    resto = divisor_abs - resto
+                resto = -resto
+
+        print(f"O resultado do modulo é: {resto:d}")
+
+        
 
 
 if __name__ == "__main__":
