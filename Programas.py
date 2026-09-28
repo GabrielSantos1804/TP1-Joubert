@@ -20,6 +20,7 @@ class Programas:
         #self.programaModulo(ram, cpu, 17, 5)
         #self.programaMUVEspaco(ram, cpu, 0, 0, 2, 3)
         #self.programaMDC(ram,cpu,48,18)
+        #self.programaMMC(ram,cpu,12,18)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -331,7 +332,7 @@ class Programas:
                     resto = divisor_abs - resto
                 resto = -resto
         
-        cpu.setRegistrador1(resto)
+        lan.salvarValor(cpu, ram, resto, 0)
         print(f"O resultado do modulo é: {resto:d}")
 
     def programaMUVEspaco(self, ram , cpu,S0, v0, a, t):
@@ -372,8 +373,28 @@ class Programas:
             numero1 = numero2
             numero2 = lan.obterValor(cpu,ram,0)
         mdc = numero1
-        cpu.setRegistrador1(mdc)
+        lan.salvarValor(cpu, ram, mdc, 0)
         print(f"O resultado do MDC é: {mdc}")
+
+    def programaMMC(self,ram,cpu,numero1,numero2):
+        ram.criarRAM_vazia(1)
+
+        lan = LingAltoNivel()
+        numero1_abs = abs(numero1)
+        numero2_abs = abs(numero2)
+
+        self.programaMultII(ram,cpu,numero1_abs,numero2_abs)
+        denominador = lan.obterValor(cpu,ram,0)
+        self.programaMDC(ram,cpu,numero1,numero2)
+        divisor = lan.obterValor(cpu,ram,0)
+
+        self.programaDivII(ram,cpu,denominador,divisor)
+        mmc = lan.obterValor(cpu,ram,0)
+
+        lan.salvarValor(cpu, ram, mmc, 0)
+        print(f"O resultado do mmc é: {mmc}")
+
+
 
 
 
