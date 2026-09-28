@@ -13,8 +13,10 @@ class Programas:
         #self.programaFat(ram, cpu, 10)
         #self.programaDivII(ram, cpu, 175, 4)
         #self.programaPoten(ram, cpu, 2, 6)
-        self.programaBhaskara(ram, cpu, 1, 2, -3)
+        #self.programaBhaskara(ram, cpu, 1, 2, -3)
         #self.programaRaiz(ram, cpu, 4)
+        #self.programaDistancia2Pontos(ram, cpu, 1, 4, 2, 6)
+        #self.programaVerticeParabola(ram, cpu, 1, -4, 3)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -176,6 +178,8 @@ class Programas:
         print(f"O resultado inteiro da raíz quadrada eh: {resultado}")
 
     def programaBhaskara(self, ram, cpu, a, b ,c):
+        ram.criarRAM_vazia(2)
+
         lan = LingAltoNivel()
 
         self.programaPoten(ram , cpu, b, 2)
@@ -233,13 +237,66 @@ class Programas:
 
             print(f"As raizes sao respectivamente : {x1} e {x2}")
 
+    def programaDistancia2Pontos(self, ram, cpu, x1, y1, x2, y2):
+        ram.criarRAM_vazia(2)
 
+        lan = LingAltoNivel()
 
+        lan.salvarValor(cpu, ram, x1, 0)
+        lan.salvarValor(cpu, ram, x2, 1)
+        lan.subtrair(cpu, ram, 1, 0)
+        x = cpu.getRegistrador1()
 
+        lan.salvarValor(cpu, ram, y1, 0)
+        lan.salvarValor(cpu, ram, y2, 1)
+        lan.subtrair(cpu, ram, 1, 0)
+        y = cpu.getRegistrador1()
 
+        self.programaPoten(ram, cpu, x,2)
+        x = cpu.getRegistrador1()
 
+        self.programaPoten(ram, cpu, y, 2)
+        y = cpu.getRegistrador1()
 
+        lan.salvarValor(cpu, ram, x, 0)
+        lan.salvarValor(cpu, ram, y, 1)
+        lan.somar(cpu, ram , 1, 0)
+        d = cpu.getRegistrador1()
 
+        self.programaRaiz(ram, cpu, d)
+        d = cpu.getRegistrador1()
+        print(f"A distancia entre esses pontos é {d}")
+
+    def programaVerticeParabola(self, ram , cpu, a, b, c):
+        ram.criarRAM_vazia(2)
+
+        lan = LingAltoNivel()
+
+        self.programaPoten(ram, cpu, b, 2)
+        baoquadrado = cpu.getRegistrador1()
+
+        self.programaMultII(ram, cpu, a, c)
+        a_vezes_c = cpu.getRegistrador1()
+
+        self.programaMultII(ram, cpu, a_vezes_c, 4)
+        quatro_vezes_ac = cpu.getRegistrador1()
+
+        lan.salvarValor(cpu, ram, baoquadrado, 0)
+        lan.salvarValor(cpu, ram, quatro_vezes_ac, 1)
+        lan.subtrair(cpu, ram, 0, 1)
+        delta = lan.obterValor(cpu, ram, 0)
+
+        self.programaMultII(ram, cpu, 2, a)
+        dois_vezes_a = cpu.getRegistrador1()
+        self.programaDivII(ram, cpu, -b, dois_vezes_a)
+        xv = cpu.getRegistrador1()
+
+        self.programaMultII(ram, cpu, 4, a)
+        quatro_vezes_a = cpu.getRegistrador1()
+        self.programaDivII(ram, cpu, -delta, quatro_vezes_a)
+        yv = cpu.getRegistrador1()
+
+        print(f"O vertice da parabola é {xv, yv}")
 
 
 
