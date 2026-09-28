@@ -16,9 +16,10 @@ class Programas:
         #self.programaBhaskara(ram, cpu, 1, 2, -3)
         #self.programaRaiz(ram, cpu, 4)
         #self.programaDistancia2Pontos(ram, cpu, 1, 4, 2, 6)
-        self.programaVerticeParabola(ram, cpu, 1, -4, 3)
+        #self.programaVerticeParabola(ram, cpu, 1, -4, 3)
         #self.programaModulo(ram, cpu, 17, 5)
         #self.programaMUVEspaco(ram, cpu, 0, 0, 2, 3)
+        #self.programaMDC(ram,cpu,48,18)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -214,7 +215,8 @@ class Programas:
             self.programaDivII(ram, cpu, menos_b_escalado, dois_vezes_a)
             quociente_escalado = cpu.getRegistrador1()
 
-            x = quociente_escalado / escala
+            self.programaDivII(ram,cpu,quociente_escalado,escala)
+            x = cpu.getRegistrador1()
             print(f"Uma raiz real: x = {x}")
         else:
             self.programaRaiz(ram, cpu, delta)
@@ -327,7 +329,8 @@ class Programas:
                 if dividendo >= 0:
                     resto = divisor_abs - resto
                 resto = -resto
-
+        
+        cpu.setRegistrador1(resto)
         print(f"O resultado do modulo é: {resto:d}")
 
     def programaMUVEspaco(self, ram , cpu,S0, v0, a, t):
@@ -357,6 +360,19 @@ class Programas:
         s = cpu.getRegistrador1()
 
         print(f"O espaço é: {s}")
+
+    def programaMDC(self,ram,cpu,numero1,numero2):
+        ram.criarRAM_vazia(2)
+
+        lan = LingAltoNivel()
+
+        while numero2 != 0:
+            self.programaModulo(ram,cpu,numero1,numero2)
+            numero1 = numero2
+            numero2 = lan.obterValor(cpu,ram,0)
+        mdc = numero1
+        cpu.setRegistrador1(mdc)
+        print(f"O resultado do MDC é: {mdc}")
 
 
 
