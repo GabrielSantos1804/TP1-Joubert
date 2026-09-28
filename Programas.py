@@ -16,8 +16,9 @@ class Programas:
         #self.programaBhaskara(ram, cpu, 1, 2, -3)
         #self.programaRaiz(ram, cpu, 4)
         #self.programaDistancia2Pontos(ram, cpu, 1, 4, 2, 6)
-        #self.programaVerticeParabola(ram, cpu, 1, -4, 3)
+        self.programaVerticeParabola(ram, cpu, 1, -4, 3)
         #self.programaModulo(ram, cpu, 17, 5)
+        #self.programaMUVEspaco(ram, cpu, 0, 0, 2, 3)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -195,7 +196,7 @@ class Programas:
         lan.salvarValor(cpu, ram, baoquadrado, 0)
         lan.salvarValor(cpu,ram, quatro_vezes_ac, 1)
         lan.subtrair(cpu, ram, 0, 1)
-        delta = lan.obterValor(cpu, ram, 0)
+        delta = cpu.getRegistrador1()
 
         print(f"O delta é {delta}")
 
@@ -285,7 +286,7 @@ class Programas:
         lan.salvarValor(cpu, ram, baoquadrado, 0)
         lan.salvarValor(cpu, ram, quatro_vezes_ac, 1)
         lan.subtrair(cpu, ram, 0, 1)
-        delta = lan.obterValor(cpu, ram, 0)
+        delta = cpu.getRegistrador1()
 
         self.programaMultII(ram, cpu, 2, a)
         dois_vezes_a = cpu.getRegistrador1()
@@ -328,6 +329,36 @@ class Programas:
                 resto = -resto
 
         print(f"O resultado do modulo é: {resto:d}")
+
+    def programaMUVEspaco(self, ram , cpu,S0, v0, a, t):
+        ram.criarRAM_vazia(2)
+        lan = LingAltoNivel()
+
+        self.programaMultII(ram, cpu, v0, t)
+        v0 = cpu.getRegistrador1()
+
+        self.programaPoten(ram, cpu, t, 2)
+        t = cpu.getRegistrador1()
+
+        self.programaMultII(ram , cpu, a, t)
+        t = cpu.getRegistrador1()
+
+        self.programaDivII(ram, cpu, t, 2)
+        t = cpu.getRegistrador1()
+
+        lan.salvarValor(cpu, ram, S0, 0)
+        lan.salvarValor(cpu, ram, v0, 1)
+        lan.somar(cpu, ram, 0, 1)
+        v0 = cpu.getRegistrador1()
+
+        lan.salvarValor(cpu,ram, v0, 0)
+        lan.salvarValor(cpu, ram, t, 1)
+        lan.somar(cpu, ram, 0, 1)
+        S = cpu.getRegistrador1()
+
+        print(f"O espaço é: {S}")
+
+
 
         
 
