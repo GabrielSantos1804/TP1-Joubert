@@ -354,9 +354,9 @@ class Programas:
         lan.salvarValor(cpu,ram, v0, 0)
         lan.salvarValor(cpu, ram, t, 1)
         lan.somar(cpu, ram, 0, 1)
-        S = cpu.getRegistrador1()
+        s = cpu.getRegistrador1()
 
-        print(f"O espaço é: {S}")
+        print(f"O espaço é: {s}")
 
 
 
