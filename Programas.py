@@ -528,16 +528,6 @@ class Programas:
 
         print(f"O resultado da multiplicação eh: {mult}")
 
-    def programaPoten(self, ram, cpu, base, expoente):
-        lan = LingAltoNivel()
-
-        resultado = 1
-        expoente_abs = abs(expoente)
-        for i in range(expoente_abs):
-            self.programaMultII(ram,cpu,resultado, base)
-            resultado = lan.obterValor(cpu, ram, 0)
-            print(f"O Resultado da potenciação eh: {resultado}")
-
     def palindromoNumerico(self, cpu, ram, numero):
         if numero < 0:
             print("Não são aceitos números negativos")
