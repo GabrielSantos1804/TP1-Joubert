@@ -580,6 +580,14 @@ class Programas:
 
 
     def programaCombinacao(self, cpu, ram, n, k):
+        if n < 0 or k < 0:
+            print("Erro: Os valores n e k não podem ser negativos")
+            return
+
+        if k > n:
+            print(f"Erro: Não é possível agrupar {n} elementos em conjuntos de {k}.")
+            return
+
         ram.criarRAM_vazia(2)
         lan = LingAltoNivel()
 
