@@ -23,6 +23,8 @@ class Programas:
         #self.programaMUVEspaco(ram, cpu, 0, 0, 2, 3)
         #self.programaMDC(ram,cpu,48,18)
         #self.programaMMC(ram,cpu,12,18)
+        #self.programaFibonacci(cpu, ram, 11)
+        self.palindromoNumerico(cpu, ram, 121)
         #self.programaPrimo(ram,cpu,29)
         #self.programaFibonacci(cpu, ram, 11)
         self.programaCombinacao(cpu, ram, 3, 0)
@@ -167,7 +169,7 @@ class Programas:
     def programaRaiz(self, ram, cpu, base):
 
         if (base < 0):
-            print("Não é permitido bases menores que 0")
+            print("Não são permitidas bases menores que 0")
             return 0
 
         ram.criarRAM_vazia(3)
@@ -444,7 +446,7 @@ class Programas:
     def programaFibonacci(self, cpu, ram, indice):
         if indice < 0:
             print("Índices menores que 0 não são aceitos")
-            return 0;
+            return None
 
         ram.criarRAM_vazia(3)
         lan = LingAltoNivel()
@@ -459,6 +461,123 @@ class Programas:
 
         resultado = lan.obterValor(cpu, ram, 0)
         print(f"O resultado do Fibonacci eh: {resultado}")
+
+    def programaDivIII(self, ram, cpu, dividendo, divisor, criar_ram = True):
+        # zerar ram
+        # Ex. dividir 14 / 3:
+        # 14-3=11 (1 sub)
+        # 11-3=8 (2 subs)
+        # 8-3=5 (3 subs)
+        # 5-3=2 (4 subs)
+        # 2-3 < 0 (halt)
+        # resultado 4
+
+        # executar instrucao
+        # -1 -> halt
+        # 0 -> soma
+        # 1 -> subtrai
+        # 2 -> copia do registrador para RAM
+        # 3 -> copia da RAM para o registrador
+
+        if divisor == 0:
+            print("Erro: divisão por zero não eh permitida.")
+            return None
+
+        resultado_negativo = (dividendo < 0) != (divisor < 0)  # XOR de sinais
+        dividendo_abs = abs(dividendo)
+        divisor_abs = abs(divisor)
+
+        if criar_ram:
+            ram.criarRAM_vazia(4)
+
+        lan = LingAltoNivel()
+        lan.salvarValor(cpu, ram, dividendo_abs, 0)  # <- precisa ser dividendo_abs, não dividendo
+        lan.salvarValor(cpu, ram, divisor_abs, 1)
+        lan.salvarValor(cpu, ram, 1, 2)
+
+        while dividendo_abs >= divisor_abs:
+            lan.subtrair(cpu, ram, 0, 1)
+            lan.somar(cpu, ram, 3, 2)
+            dividendo_abs = lan.obterValor(cpu, ram, 0)
+
+        div = lan.obterValor(cpu, ram, 3)
+
+        if resultado_negativo:
+            div = -div
+        lan.salvarValor(cpu, ram, div, 3) #alterando o local de salvamento do quociente para end3
+
+        print(f"O resultado da divisao eh: {div}")
+
+    def programaMultIII(self, ram, cpu, multiplicando, multiplicador, criar_ram = True):
+        if criar_ram:
+            ram.criarRAM_vazia(2)
+        lan = LingAltoNivel()
+
+        negativo = multiplicador < 0
+        vezes = abs(multiplicador)
+
+        lan.salvarValor(cpu, ram, multiplicando, 1)
+        for i in range(vezes):
+            lan.somar(cpu,ram,0,1)
+
+        mult = lan.obterValor(cpu,ram,0)
+
+        if negativo:
+            mult = -mult
+            lan.salvarValor(cpu, ram, mult, 0)
+
+        print(f"O resultado da multiplicação eh: {mult}")
+
+    def programaPoten(self, ram, cpu, base, expoente):
+        lan = LingAltoNivel()
+
+        resultado = 1
+        expoente_abs = abs(expoente)
+        for i in range(expoente_abs):
+            self.programaMultII(ram,cpu,resultado, base)
+            resultado = lan.obterValor(cpu, ram, 0)
+            print(f"O Resultado da potenciação eh: {resultado}")
+
+    def palindromoNumerico(self, cpu, ram, numero):
+        if numero < 0:
+            print("Não são aceitos números negativos")
+            return None
+
+        ram.criarRAM_vazia(6)
+        lan = LingAltoNivel()
+
+        valor_antigo = numero
+        quociente = numero
+        invertido = 0
+
+        for i in range(len(str(numero))):
+            #limpando div anterior
+            lan.salvarValor(cpu, ram, 0, 3)
+
+            self.programaDivIII(ram, cpu, quociente, 10,False)
+            quociente = lan.obterValor(cpu, ram, 3)
+            resto = lan.obterValor(cpu, ram, 0)
+
+            #limpando multiplicação anterior
+            lan.salvarValor(cpu, ram, 0, 0)
+
+            self.programaMultIII(ram, cpu, invertido, 10, False)
+            invertido = lan.obterValor(cpu, ram, 0)
+            lan.salvarValor(cpu, ram, invertido, 5)
+
+            lan.salvarValor(cpu, ram, resto, 3)
+            lan.somar(cpu, ram, 5, 3)
+            invertido = lan.obterValor(cpu, ram, 5)
+
+        if invertido == valor_antigo:
+            print(f"O número {valor_antigo} eh um palíndromo")
+            return None
+        else:
+            print(f"O número {valor_antigo} não eh um palíndromo")
+            return None
+
+
+
 
     def programaCombinacao(self, cpu, ram, n, k):
         ram.criarRAM_vazia(2)
