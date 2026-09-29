@@ -8,10 +8,12 @@ class Programas:
     def __init__(self):
         ram = RAM()
         cpu = CPU()
+        #PROGRAMAS JOUBERT
         #self.programaAleatorio(ram, cpu, 2000000)
         #self.programaMultII(ram,cpu,15, 150)
         #self.programaFat(ram, cpu, 10)
         #self.programaDivII(ram, cpu, 175, 4)
+        #PROGRAMAS AUTORAIS
         #self.programaPoten(ram, cpu, 2, 5)
         #self.programaBhaskara(ram, cpu, 1, 2, -3)
         #self.programaRaiz(ram, cpu, 4)
@@ -22,7 +24,8 @@ class Programas:
         #self.programaMDC(ram,cpu,48,18)
         #self.programaMMC(ram,cpu,12,18)
         #self.programaPrimo(ram,cpu,29)
-        self.programaFibonacci(cpu, ram, 11)
+        #self.programaFibonacci(cpu, ram, 11)
+        self.programaCombinacao(cpu, ram, 3, 1)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -432,11 +435,6 @@ class Programas:
             primo = True
             print(f"O número é primo!")
 
-
-        
-
-
-
     def programaFibonacci(self, cpu, ram, indice):
         if indice < 0:
             print("Índices menores que 0 não são aceitos")
@@ -456,7 +454,31 @@ class Programas:
         resultado = lan.obterValor(cpu, ram, 0)
         print(f"O resultado do Fibonacci eh: {resultado}")
 
+    def programaCombinacao(self, cpu, ram, n, k):
+        ram.criarRAM_vazia(2)
+        lan = LingAltoNivel()
 
+        lan.salvarValor(cpu, ram, n, 0)
+        lan.salvarValor(cpu, ram, k, 1)
+        lan.subtrair(cpu, ram, 0, 1)
+        val_n_menos_k = lan.obterValor(cpu, ram, 0)
+
+        self.programaFat(ram, cpu, val_n_menos_k)
+        fat_n_menos_k = lan.obterValor(cpu, ram, 0)
+
+        self.programaFat(ram, cpu, n)
+        fat_n = lan.obterValor(cpu, ram, 0)
+
+        self.programaFat(ram, cpu, k)
+        fat_k = lan.obterValor(cpu, ram, 0)
+
+        self.programaMultII(ram, cpu, fat_k, fat_n_menos_k)
+        denominador = lan.obterValor(cpu, ram, 0)
+
+        self.programaDivII(ram, cpu, fat_n, denominador)
+        combinacao = lan.obterValor(cpu, ram, 0)
+
+        print(f"A combinação C({n},{k}) = {combinacao}")
 
 
         
