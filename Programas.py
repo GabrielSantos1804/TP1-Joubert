@@ -8,21 +8,27 @@ class Programas:
     def __init__(self):
         ram = RAM()
         cpu = CPU()
+        #PROGRAMAS JOUBERT
         #self.programaAleatorio(ram, cpu, 2000000)
         #self.programaMultII(ram,cpu,15, 150)
         #self.programaFat(ram, cpu, 10)
         #self.programaDivII(ram, cpu, 175, 4)
+        #PROGRAMAS AUTORAIS
         #self.programaPoten(ram, cpu, 2, 5)
         #self.programaBhaskara(ram, cpu, 1, 2, -3)
         #self.programaRaiz(ram, cpu, 4)
         #self.programaDistancia2Pontos(ram, cpu, 1, 4, 2, 6)
         #self.programaVerticeParabola(ram, cpu, 1, -4, 3)
-        #self.programaModulo(ram, cpu, 17, 5)
+        #self.programaModulo(ram, cpu, -17, -5)
         #self.programaMUVEspaco(ram, cpu, 0, 0, 2, 3)
         #self.programaMDC(ram,cpu,48,18)
         #self.programaMMC(ram,cpu,12,18)
         #self.programaFibonacci(cpu, ram, 11)
         self.palindromoNumerico(cpu, ram, 121)
+        #self.programaPrimo(ram,cpu,29)
+        #self.programaFibonacci(cpu, ram, 11)
+        self.programaCombinacao(cpu, ram, 3, 0)
+
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
         umPrograma : list[Instrucao]= [None] * qdeInstrucoes
@@ -63,6 +69,12 @@ class Programas:
         print(f"O resultado da multiplicação eh: {mult}")
 
     def programaFat(self,ram, cpu, fat):
+        if fat == 0:
+            lan = LingAltoNivel()
+            lan.salvarValor(cpu, ram, 1, 0)
+            print("O resultado do fatorial eh: 1")
+            return
+
         j = 1
         for i in range(1, fat+1):
             self.programaMultII(ram, cpu, j,i)
@@ -305,7 +317,7 @@ class Programas:
 
         print(f"O vertice da parabola é {xv, yv}")
 
-    def programaModulo(self, ram, cpu, dividendo, divisor):
+    def programaModulo(self, ram, cpu, dividendo, divisor, criar_ram = True):
         #não podemos executar divisao com o divisor 0
         if divisor == 0:
             print("Erro: divisão por zero não é permitida.")
@@ -313,7 +325,8 @@ class Programas:
         #transformamos os valores em positivos
         dividendo_abs = abs(dividendo)
         divisor_abs = abs(divisor)
-        ram.criarRAM_vazia(2)#criando o espaço na RAM para executar a conta
+        if criar_ram:
+            ram.criarRAM_vazia(2)#criando o espaço na RAM para executar a conta
         lan = LingAltoNivel()#criando um objeto com as funções da linguagem de alto nivel
         #salvando na RAM os valores positivos
         lan.salvarValor(cpu,ram,dividendo_abs,0)
@@ -327,11 +340,21 @@ class Programas:
         if resto != 0:
             if divisor > 0:
                 if dividendo < 0:
-                    resto = divisor_abs - resto
+                    lan.salvarValor(cpu,ram,divisor_abs,1)
+                    lan.salvarValor(cpu,ram,resto,0)
+                    lan.subtrair(cpu,ram,1,0)
+                    resto = lan.obterValor(cpu,ram,1)
             else:
                 if dividendo >= 0:
-                    resto = divisor_abs - resto
-                resto = -resto
+                    lan.salvarValor(cpu,ram,divisor_abs,1)
+                    lan.salvarValor(cpu,ram,resto,0)
+                    lan.subtrair(cpu,ram,1,0)
+                    resto = lan.obterValor(cpu,ram,1)
+
+                lan.salvarValor(cpu,ram,0,1)
+                lan.salvarValor(cpu,ram,resto,0)
+                lan.subtrair(cpu,ram,1,0)
+                resto = lan.obterValor(cpu,ram,1)
         
         lan.salvarValor(cpu, ram, resto, 0)
         print(f"O resultado do modulo é: {resto:d}")
@@ -394,6 +417,31 @@ class Programas:
 
         lan.salvarValor(cpu, ram, mmc, 0)
         print(f"O resultado do mmc é: {mmc}")
+
+    def programaPrimo(self,ram,cpu,numero):
+        ram.criarRAM_vazia(4)
+
+        lan = LingAltoNivel()
+
+        lan.salvarValor(cpu, ram, numero, 0)
+        lan.salvarValor(cpu, ram, 1, 1)
+        lan.somar(cpu, ram, 0, 1)
+        limite = lan.obterValor(cpu, ram, 0)
+        lan.salvarValor(cpu,ram,0,2)#salvar o contador
+        lan.salvarValor(cpu,ram,1,3)#salvar o numero 1
+        for i in range(1,limite):
+            self.programaModulo(ram,cpu,numero,i,False)
+            resto = lan.obterValor(cpu,ram,0)
+            if resto == 0:
+                lan.somar(cpu,ram,2,3)
+
+        contador = lan.obterValor(cpu,ram,2)
+        if contador > 2:
+            primo = False
+            print(f"O número não é primo!")
+        else:
+            primo = True
+            print(f"O número é primo!")
 
     def programaFibonacci(self, cpu, ram, indice):
         if indice < 0:
@@ -530,6 +578,32 @@ class Programas:
 
 
 
+
+    def programaCombinacao(self, cpu, ram, n, k):
+        ram.criarRAM_vazia(2)
+        lan = LingAltoNivel()
+
+        lan.salvarValor(cpu, ram, n, 0)
+        lan.salvarValor(cpu, ram, k, 1)
+        lan.subtrair(cpu, ram, 0, 1)
+        val_n_menos_k = lan.obterValor(cpu, ram, 0)
+
+        self.programaFat(ram, cpu, val_n_menos_k)
+        fat_n_menos_k = lan.obterValor(cpu, ram, 0)
+
+        self.programaFat(ram, cpu, n)
+        fat_n = lan.obterValor(cpu, ram, 0)
+
+        self.programaFat(ram, cpu, k)
+        fat_k = lan.obterValor(cpu, ram, 0)
+
+        self.programaMultII(ram, cpu, fat_k, fat_n_menos_k)
+        denominador = lan.obterValor(cpu, ram, 0)
+
+        self.programaDivII(ram, cpu, fat_n, denominador)
+        combinacao = lan.obterValor(cpu, ram, 0)
+
+        print(f"A combinação C({n},{k}) = {combinacao}")
 
 
         
