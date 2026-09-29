@@ -22,6 +22,7 @@ class Programas:
         #self.programaMDC(ram,cpu,48,18)
         #self.programaMMC(ram,cpu,12,18)
         #self.programaPrimo(ram,cpu,29)
+        self.programaFibonacci(cpu, ram, 11)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -436,6 +437,24 @@ class Programas:
 
 
 
+    def programaFibonacci(self, cpu, ram, indice):
+        if indice < 0:
+            print("Índices menores que 0 não são aceitos")
+            return 0;
+
+        ram.criarRAM_vazia(3)
+        lan = LingAltoNivel()
+
+        lan.salvarValor(cpu, ram, 0, 0)
+        lan.salvarValor(cpu, ram, 1, 1)
+
+        for i in range(indice):
+            b = lan.obterValor(cpu, ram, 1)
+            lan.somar(cpu, ram, 1, 0)
+            lan.salvarValor(cpu, ram, b, 0)
+
+        resultado = lan.obterValor(cpu, ram, 0)
+        print(f"O resultado do Fibonacci eh: {resultado}")
 
 
 
