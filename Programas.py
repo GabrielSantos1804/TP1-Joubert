@@ -25,7 +25,7 @@ class Programas:
         #self.programaMMC(ram,cpu,12,18)
         #self.programaPrimo(ram,cpu,29)
         #self.programaFibonacci(cpu, ram, 11)
-        self.programaCombinacao(cpu, ram, 3, 1)
+        self.programaCombinacao(cpu, ram, 3, 0)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -67,6 +67,12 @@ class Programas:
         print(f"O resultado da multiplicação eh: {mult}")
 
     def programaFat(self,ram, cpu, fat):
+        if fat == 0:
+            lan = LingAltoNivel()
+            lan.salvarValor(cpu, ram, 1, 0)
+            print("O resultado do fatorial eh: 1")
+            return
+
         j = 1
         for i in range(1, fat+1):
             self.programaMultII(ram, cpu, j,i)
