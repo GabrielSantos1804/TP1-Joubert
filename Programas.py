@@ -32,7 +32,7 @@ class Programas:
         #self.programaCombinacao(cpu, ram, 3, 0)
         #self.programaRamanujan(cpu, ram, 1)
         #self.programaEquacao2grauSomaProduto(cpu,ram,1,2,-3)
-        self.programaSomaDigitos(cpu, ram, 999)
+        #self.programaSomaDigitos(cpu, ram, 999)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
