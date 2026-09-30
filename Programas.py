@@ -1,4 +1,6 @@
 import random as rdm
+
+import LingAltoNivel
 from RAM import RAM
 from CPU import CPU
 from Instrucao import Instrucao
@@ -24,12 +26,13 @@ class Programas:
         #self.programaMDC(ram,cpu,48,18)
         #self.programaMMC(ram,cpu,12,18)
         #self.programaFibonacci(cpu, ram, 11)
-        #self.palindromoNumerico(cpu, ram, 121)
+        #self.programaPalindromoNumerico(cpu, ram, 121)
         #self.programaPrimo(ram,cpu,29)
         #self.programaFibonacci(cpu, ram, 11)
         #self.programaCombinacao(cpu, ram, 3, 0)
-        self.programaRamanujan(cpu, ram, 1)
+        #self.programaRamanujan(cpu, ram, 1)
         #self.programaEquacao2grauSomaProduto(cpu,ram,1,2,-3)
+        self.programaSomaDigitos(cpu, ram, 999)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -530,7 +533,7 @@ class Programas:
 
         print(f"O resultado da multiplicação eh: {mult}")
 
-    def palindromoNumerico(self, cpu, ram, numero):
+    def programaPalindromoNumerico(self, cpu, ram, numero):
         if numero < 0:
             print("Não são aceitos números negativos")
             return None
@@ -606,7 +609,7 @@ class Programas:
         lan = LingAltoNivel()
         ram.criarRAM_vazia(2)
 
-        escala = 10000
+        escala = 1000
         self.programaMultII(ram, cpu, escala, escala)
         escala_ao_quadrado = lan.obterValor(cpu, ram, 0)
         self.programaMultII(ram, cpu, escala_ao_quadrado, escala)
@@ -749,6 +752,29 @@ class Programas:
                 return
 
         print("Raízes não encontradas")
+
+    def programaSomaDigitos(self, cpu, ram, numero):
+        ram.criarRAM_vazia(6)
+        lan = LingAltoNivel()
+        #definindo valor incial da soma como 0
+        lan.salvarValor(cpu, ram, 0, 5)
+
+        digito = numero
+        for i in range(len(str(numero))):
+            #limpando o quociente da última divisão
+            lan.salvarValor(cpu, ram, 0, 3)
+
+            #extraindo o último digito
+            self.programaDivIII(ram, cpu, numero, 10, False)
+            #atualizando o valor de número para o que sobrou após a divisão
+            numero = lan.obterValor(cpu, ram, 3)
+            digito = lan.obterValor(cpu, ram, 0)
+            lan.salvarValor(cpu, ram, digito, 4)
+
+            lan.somar(cpu, ram, 5, 4)
+
+        soma_final = lan.obterValor(cpu, ram, 5)
+        print(f"A soma final eh: {soma_final}")
 
 
 
