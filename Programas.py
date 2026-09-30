@@ -24,10 +24,11 @@ class Programas:
         #self.programaMDC(ram,cpu,48,18)
         #self.programaMMC(ram,cpu,12,18)
         #self.programaFibonacci(cpu, ram, 11)
-        self.palindromoNumerico(cpu, ram, 121)
+        #self.palindromoNumerico(cpu, ram, 121)
         #self.programaPrimo(ram,cpu,29)
         #self.programaFibonacci(cpu, ram, 11)
-        self.programaCombinacao(cpu, ram, 3, 0)
+        #self.programaCombinacao(cpu, ram, 3, 0)
+        self.programaRamanujan(cpu, ram, 1)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -566,9 +567,6 @@ class Programas:
             print(f"O número {valor_antigo} não eh um palíndromo")
             return None
 
-
-
-
     def programaCombinacao(self, cpu, ram, n, k):
         if n < 0 or k < 0:
             print("Erro: Os valores n e k não podem ser negativos")
@@ -603,8 +601,91 @@ class Programas:
 
         print(f"A combinação C({n},{k}) = {combinacao}")
 
+    def programaRamanujan(self, cpu, ram, iteracoes):
+        lan = LingAltoNivel()
+        ram.criarRAM_vazia(2)
 
-        
+        escala = 10000
+        self.programaMultII(ram, cpu, escala, escala)
+        escala_ao_quadrado = lan.obterValor(cpu, ram, 0)
+        self.programaMultII(ram, cpu, escala_ao_quadrado, escala)
+        escala_cubo = lan.obterValor(cpu, ram, 0)
+
+        soma = 0
+
+        for k in range(iteracoes):
+            # 4K !
+            self.programaMultII(ram, cpu, 4, k)
+            quatro_k = lan.obterValor(cpu, ram, 0)
+            self.programaFat(ram, cpu, quatro_k)
+            fat_quatro_k = lan.obterValor(cpu, ram, 0)
+
+            # 1103 + 26390K
+            self.programaMultII(ram, cpu, 26390, k)
+            vinteseis_k = lan.obterValor(cpu, ram, 0)
+            lan.salvarValor(cpu, ram, vinteseis_k, 0)
+            lan.salvarValor(cpu, ram, 1103, 1)
+            lan.somar(cpu, ram, 0, 1)
+            vinteseis_k = lan.obterValor(cpu, ram, 0)
+
+            # K! ^ 4
+            self.programaFat(ram, cpu, k)
+            k_fatorial = lan.obterValor(cpu, ram, 0)
+            self.programaPoten(ram, cpu, k_fatorial, 4)
+            k_fatorial = lan.obterValor(cpu, ram, 0)
+
+            # 396 ^ 4k
+            self.programaPoten(ram, cpu, 396, quatro_k)
+            quatro_k = lan.obterValor(cpu, ram, 0)
+
+            # JUNTANDO TERMOS DE CIMA
+            self.programaMultII(ram, cpu, fat_quatro_k, vinteseis_k)
+            vinteseis_k = lan.obterValor(cpu, ram, 0)
+
+            self.programaMultII(ram, cpu, vinteseis_k, escala)
+            vinteseis_k = lan.obterValor(cpu, ram, 0)
+
+            # JUNTANDO TERMOS DE BAIXO
+            self.programaMultII(ram, cpu, k_fatorial, quatro_k)
+            k_fatorial = lan.obterValor(cpu, ram, 0)
+
+            # DIVISAO DOS TERMOS
+            self.programaDivII(ram, cpu, vinteseis_k, k_fatorial)
+            divisao = lan.obterValor(cpu, ram, 0)
+
+            ram.criarRAM_vazia(2)
+
+            lan.salvarValor(cpu, ram, soma, 0)
+            lan.salvarValor(cpu, ram, divisao, 1)
+            lan.somar(cpu, ram, 0, 1)
+            soma = lan.obterValor(cpu, ram, 0)
+
+        self.programaMultII(ram, cpu, escala_ao_quadrado, 2)
+        base_raiz = lan.obterValor(cpu, ram, 0)
+
+        self.programaRaiz(ram, cpu, base_raiz)
+        raiz_2 = lan.obterValor(cpu, ram, 0)
+
+        self.programaMultII(ram, cpu, 2, raiz_2)
+        raiz_2 = lan.obterValor(cpu, ram, 0)
+
+        # mult pelo somatorio
+        self.programaMultII(ram, cpu, soma, raiz_2)
+        total = lan.obterValor(cpu, ram, 0)
+
+        self.programaMultII(ram, cpu, escala_cubo, 9801)
+        numerador_final = lan.obterValor(cpu, ram, 0)
+
+        # final
+        self.programaDivII(ram, cpu, numerador_final, total)
+        pi = lan.obterValor(cpu, ram, 0)
+
+        pi_str = str(pi)
+        pi_str = f"{pi_str[0]}.{pi_str[1:]}"
+
+        print(f"O valor de Pi escalado eh: {pi_str}")
+
+
 
 
 if __name__ == "__main__":
