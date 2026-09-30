@@ -24,10 +24,11 @@ class Programas:
         #self.programaMDC(ram,cpu,48,18)
         #self.programaMMC(ram,cpu,12,18)
         #self.programaFibonacci(cpu, ram, 11)
-        self.palindromoNumerico(cpu, ram, 121)
+        #self.palindromoNumerico(cpu, ram, 121)
         #self.programaPrimo(ram,cpu,29)
         #self.programaFibonacci(cpu, ram, 11)
-        self.programaCombinacao(cpu, ram, 3, 0)
+        #self.programaCombinacao(cpu, ram, 3, 0)
+        #self.programaEquacao2grauSomaProduto(cpu,ram,1,2,-3)
 
 
     def programaAleatorio(self, ram, cpu, qdeInstrucoes):
@@ -603,8 +604,74 @@ class Programas:
 
         print(f"A combinação C({n},{k}) = {combinacao}")
 
+    def programaEquacao2grauSomaProduto(self, cpu, ram, a, b, c):
+        ram.criarRAM_vazia(6)
 
-        
+        lan = LingAltoNivel()
+
+        #RAM[0] = auxiliar
+        #RAM[1] = auxiliar
+        #RAM[2] = Soma
+        #RAM[3] = Produto
+        #RAM[4] = x1
+        #RAM[5] = x2
+        #Calculando -b
+        lan.salvarValor(cpu, ram, 0, 0)
+        lan.salvarValor(cpu, ram, b, 1)
+        lan.subtrair(cpu, ram, 0, 1)
+        menosb = lan.obterValor(cpu, ram, 0)
+        #Calculando Soma = -b / a
+        lan.salvarValor(cpu, ram, 0, 3)
+        self.programaDivIII(ram, cpu, menosb, a, False)
+        Soma = lan.obterValor(cpu, ram, 3)
+        #Calculando Produto = c / a
+        lan.salvarValor(cpu, ram, 0, 3)
+        self.programaDivIII(ram, cpu, c, a, False)
+        Produto = lan.obterValor(cpu, ram, 3)
+        #Salvando Soma e Produto
+        lan.salvarValor(cpu, ram, Soma, 2)
+        lan.salvarValor(cpu, ram, Produto, 3)
+        #calculando os limites para o for, que seriam o produto + 1, negativo e positivo
+        if Produto < 0:
+            lan.salvarValor(cpu, ram, 0, 0)
+            lan.salvarValor(cpu, ram, Produto, 1)
+            lan.subtrair(cpu, ram, 0, 1)
+            produtoPositivo = lan.obterValor(cpu, ram, 0)
+        else:
+            produtoPositivo = Produto
+
+        lan.salvarValor(cpu, ram, produtoPositivo, 0)
+        lan.salvarValor(cpu, ram, 1, 1)
+
+        lan.somar(cpu, ram, 0, 1)
+        limiteP = lan.obterValor(cpu, ram, 0)
+
+        lan.salvarValor(cpu, ram, 0, 1)
+        lan.salvarValor(cpu, ram, limiteP, 0)
+        lan.subtrair(cpu, ram, 1, 0)
+        limiteN = lan.obterValor(cpu, ram, 1)
+        #for para encontrar as raízes
+        for x1 in range(limiteN, limiteP):
+            lan.salvarValor(cpu, ram, x1, 4)
+            #Calculando x2 = Soma - x1
+            lan.salvarValor(cpu, ram, Soma, 5)
+            lan.subtrair(cpu, ram, 5, 4)
+            x2 = lan.obterValor(cpu, ram, 5)
+            #Zerando RAM[0] para executar a multiplicação sem erro
+            lan.salvarValor(cpu, ram, 0, 0)
+            # Calculando x1 * x2
+            self.programaMultIII(ram, cpu, x1, x2, False)
+            testeProduto = lan.obterValor(cpu, ram, 0)
+            #Verificando se o produto encontrado é igual ao produto esperado
+            if testeProduto == Produto:
+                print(f"As raízes da função do segundo grau são {x1} e {x2}")
+                return
+
+        print("Raízes não encontradas")
+
+
+
+
 
 
 if __name__ == "__main__":
