@@ -538,7 +538,7 @@ class Programas:
             print("Não são aceitos números negativos")
             return None
 
-        ram.criarRAM_vazia(6)
+        ram.criarRAM_vazia(5)
         lan = LingAltoNivel()
 
         valor_antigo = numero
@@ -558,11 +558,11 @@ class Programas:
 
             self.programaMultIII(ram, cpu, invertido, 10, False)
             invertido = lan.obterValor(cpu, ram, 0)
-            lan.salvarValor(cpu, ram, invertido, 5)
+            lan.salvarValor(cpu, ram, invertido, 4)
 
             lan.salvarValor(cpu, ram, resto, 3)
-            lan.somar(cpu, ram, 5, 3)
-            invertido = lan.obterValor(cpu, ram, 5)
+            lan.somar(cpu, ram, 4, 3)
+            invertido = lan.obterValor(cpu, ram, 4)
 
         if invertido == valor_antigo:
             print(f"O número {valor_antigo} eh um palíndromo")
@@ -759,7 +759,6 @@ class Programas:
         #definindo valor incial da soma como 0
         lan.salvarValor(cpu, ram, 0, 5)
 
-        digito = numero
         for i in range(len(str(numero))):
             #limpando o quociente da última divisão
             lan.salvarValor(cpu, ram, 0, 3)
